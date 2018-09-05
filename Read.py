@@ -24,8 +24,11 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
+import Student
 
 continue_reading = True
+# Create dictionary to store pairs of [Student:uid]
+Students = {}
 
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
@@ -39,6 +42,12 @@ signal.signal(signal.SIGINT, end_read)
 
 # Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522()
+
+# Create a Student object to relate it with the UID
+name = raw_input('Enter your name (e.g. First, Last)\n')
+major = raw_input('Enter your Major (e.g. ISD)\n')
+_id = raw_input('Enter your ID number (e.g. A01280888)\n')
+testStudent = Student(name, major, _id)
 
 # Welcome message
 print "Welcome to the MFRC522 data read example"
@@ -62,20 +71,22 @@ while continue_reading:
 
         # Print UID
         print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
+        Students[testStudent, uid]
+        print "The new student has been saved successfully!"
     
         # This is the default key for authentication
-        key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
+        # key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
         
         # Select the scanned tag
-        MIFAREReader.MFRC522_SelectTag(uid)
+        # MIFAREReader.MFRC522_SelectTag(uid)
 
         # Authenticate
-        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
+        # status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
 
         # Check if authenticated
-        if status == MIFAREReader.MI_OK:
-            MIFAREReader.MFRC522_Read(8)
-            MIFAREReader.MFRC522_StopCrypto1()
-        else:
-            print "Authentication error"
+        # if status == MIFAREReader.MI_OK:
+        #     MIFAREReader.MFRC522_Read(8)
+        #     MIFAREReader.MFRC522_StopCrypto1()
+        # else:
+        #     print "Authentication error"
 
