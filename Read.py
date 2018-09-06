@@ -26,11 +26,13 @@ import MFRC522
 import signal
 import Student
 
+# ----- OBJECTS AND VARIABLES -----
 continue_reading = True
-# Create dictionary to store pairs of [Student:uid]
-Students = {}
+Students = {} # Create dictionary to store pairs of [Student:uid]
+MIFAREReader = MFRC522.MFRC522() # Create an object of the class MFRC522
 
-# Capture SIGINT for cleanup when the script is aborted
+# ----- FUNCTIONS -----
+''' Capture SIGINT for cleanup when the script is aborted '''
 def end_read(signal,frame):
     global continue_reading
     print "Ctrl+C captured, ending read."
@@ -40,13 +42,10 @@ def end_read(signal,frame):
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
 
-# Create an object of the class MFRC522
-MIFAREReader = MFRC522.MFRC522()
-
 # Create a Student object to relate it with the UID
-name = raw_input('Enter your name (e.g. First, Last)\n')
-major = raw_input('Enter your Major (e.g. ISD)\n')
-_id = raw_input('Enter your ID number (e.g. A01280888)\n')
+name = raw_input('Enter your name (e.g. First, Last)\n\n')
+major = raw_input('Enter your Major (e.g. ISD)\n\n')
+_id = raw_input('Enter your ID number (e.g. A01280888)\n\n')
 testStudent = Student(name, major, _id)
 
 # Welcome message
@@ -69,9 +68,8 @@ while continue_reading:
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
 
-        # Print UID
         print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
-        Students[testStudent, uid]
+        Students[testStudent] = uid
         print "The new student has been saved successfully!"
     
         # This is the default key for authentication
